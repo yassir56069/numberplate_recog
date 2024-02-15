@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:numberplate_recog/pages/home.dart';
-import 'package:numberplate_recog/pages/scan.dart';
 
 void main() {
   runApp(const MyApp());
