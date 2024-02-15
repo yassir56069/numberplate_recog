@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:numberplate_recog/pages/scan.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -141,8 +140,8 @@ class HomePage extends StatelessWidget {
                       onTap: () {},
                       child: SizedBox(
                           child: Ink(
-                        padding: EdgeInsets.only(top: 100),
-                        child: Column(
+                        padding: const EdgeInsets.only(top: 100),
+                        child: const Column(
                           children: [
                             Icon(Icons.image, size: 70),
                             Text('Gallery')
@@ -157,8 +156,8 @@ class HomePage extends StatelessWidget {
                       onTap: () {},
                       child: SizedBox(
                           child: Ink(
-                        padding: EdgeInsets.only(top: 100),
-                        child: Column(
+                        padding: const EdgeInsets.only(top: 100),
+                        child: const Column(
                           children: [
                             Icon(Icons.camera_alt, size: 70),
                             Text('Camera')
