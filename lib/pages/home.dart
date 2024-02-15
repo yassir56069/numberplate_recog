@@ -28,6 +28,21 @@ class HomePage extends StatelessWidget {
               width: 30,
             ),
           )),
+      body: GridView.count(crossAxisCount: 2, children: const [
+        Card(
+            color: Colors.white,
+            shadowColor: Colors.black,
+            child: Center(
+              child: Text('Camera'),
+            )),
+        Card(
+          color: Colors.white,
+          shadowColor: Colors.black,
+          child: Center(
+            child: Text('Database'),
+          ),
+        ),
+      ]),
     );
   }
 }
