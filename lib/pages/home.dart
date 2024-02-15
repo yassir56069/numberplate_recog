@@ -19,8 +19,7 @@ class HomePage extends StatelessWidget {
         margin: const EdgeInsets.all(30),
         child: InkWell(
           onTap: () {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const ScanPage()));
+            showImagePickerOption(context);
           },
           borderRadius: BorderRadius.circular(20),
           child: Ink(
@@ -121,5 +120,64 @@ class HomePage extends StatelessWidget {
       shadowColor: Colors.black,
       automaticallyImplyLeading: false,
     );
+  }
+
+  void showImagePickerOption(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (builder) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height / 3,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(20),
+                      onTap: () {},
+                      child: SizedBox(
+                          child: Ink(
+                        padding: EdgeInsets.only(top: 100),
+                        child: Column(
+                          children: [
+                            Icon(Icons.image, size: 70),
+                            Text('Gallery')
+                          ],
+                        ),
+                      )),
+                    ),
+                  ),
+                  Expanded(
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(20),
+                      onTap: () {},
+                      child: SizedBox(
+                          child: Ink(
+                        padding: EdgeInsets.only(top: 100),
+                        child: Column(
+                          children: [
+                            Icon(Icons.camera_alt, size: 70),
+                            Text('Camera')
+                          ],
+                        ),
+                      )),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  Future _pickImageFromGallery() async {
+    // final returnImage =
+    //     await ImagePicker().pickImage(source: ImageSource.gallery);
+    // setState(() {});
+    return UnimplementedError('soon');
   }
 }
