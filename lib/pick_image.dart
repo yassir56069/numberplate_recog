@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PickImage extends StatefulWidget {
   const PickImage({super.key});
@@ -11,6 +13,8 @@ class PickImage extends StatefulWidget {
 
 class _PickImageState extends State<PickImage> {
   Uint8List? _image;
+  File? selectedImage;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,5 +48,18 @@ class _PickImageState extends State<PickImage> {
             height: MediaQuery.of(context).size.height / 4,
           );
         });
+  }
+
+  Future _pickImageFromGallery() async {
+    final returnImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (returnImage == null) return;
+
+    setState(() {
+      selectedImage = File(returnImage.path);
+      _image = File(returnImage.path).readAsBytesSync();
+    });
+    return UnimplementedError('soon');
   }
 }

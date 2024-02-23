@@ -1,8 +1,20 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  Uint8List? _image;
+  File? selectedImage;
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +149,9 @@ class HomePage extends StatelessWidget {
                   Expanded(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(20),
-                      onTap: () {},
+                      onTap: () {
+                        _pickImageFromGallery();
+                      },
                       child: SizedBox(
                           child: Ink(
                         padding: const EdgeInsets.only(top: 100),
@@ -153,7 +167,9 @@ class HomePage extends StatelessWidget {
                   Expanded(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(20),
-                      onTap: () {},
+                      onTap: () {
+                        _pickImageFromCamera();
+                      },
                       child: SizedBox(
                           child: Ink(
                         padding: const EdgeInsets.only(top: 100),
@@ -173,10 +189,39 @@ class HomePage extends StatelessWidget {
         });
   }
 
+// Gallery
   Future _pickImageFromGallery() async {
-    // final returnImage =
-    //     await ImagePicker().pickImage(source: ImageSource.gallery);
-    // setState(() {});
-    return UnimplementedError('soon');
+    final returnImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (returnImage == null) return;
+
+    setState(() {
+      selectedImage = File(returnImage.path);
+      _image = File(returnImage.path).readAsBytesSync();
+    });
+    if (mounted) {
+      Navigator.of(context).pop();
+    } else {
+      return;
+    }
+  }
+
+// Camera
+  Future _pickImageFromCamera() async {
+    final returnImage =
+        await ImagePicker().pickImage(source: ImageSource.camera);
+
+    if (returnImage == null) return;
+
+    setState(() {
+      selectedImage = File(returnImage.path);
+      _image = File(returnImage.path).readAsBytesSync();
+    });
+    if (mounted) {
+      Navigator.of(context).pop();
+    } else {
+      return;
+    }
   }
 }
