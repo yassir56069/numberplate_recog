@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 class HomePage extends StatefulWidget {
@@ -75,7 +76,9 @@ class _HomePageState extends State<HomePage> {
       Container(
         margin: const EdgeInsets.all(30),
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            // backendBloc.fetchData();
+          },
           borderRadius: BorderRadius.circular(20),
           child: Ink(
             decoration: BoxDecoration(
