@@ -62,4 +62,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Contact
 
-For inquiries, contact [Yassir Hoossan Buksh] at [hoossanbukshyassir@gmail.com].
+For inquiries, contact Yassir Hoossan Buksh at [hoossanbukshyassir@gmail.com].
