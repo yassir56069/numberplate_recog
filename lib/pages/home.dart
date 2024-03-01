@@ -4,6 +4,13 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:numberplate_recog/main.dart';
+import 'package:numberplate_recog/pages/dialog.dart' as dialog;
+
+import 'package:numberplate_recog/pages/platescreen.dart';
+
+import 'package:google_ml_kit/google_ml_kit.dart' as ml;
+import 'dart:async';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,6 +22,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Uint8List? _image;
   File? selectedImage;
+  ml.InputImage? inputImage;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +39,7 @@ class _HomePageState extends State<HomePage> {
         child: InkWell(
           onTap: () {
             showImagePickerOption(context);
+            results.clear();
           },
           borderRadius: BorderRadius.circular(20),
           child: Ink(
@@ -75,7 +84,12 @@ class _HomePageState extends State<HomePage> {
       Container(
         margin: const EdgeInsets.all(30),
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => PlatesScreen()),
+            );
+          },
           borderRadius: BorderRadius.circular(20),
           child: Ink(
             decoration: BoxDecoration(
@@ -134,6 +148,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void showImagePickerOption(BuildContext context) {
+    results.clear();
     showModalBottomSheet(
         context: context,
         builder: (builder) {
@@ -150,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(20),
                       onTap: () {
-                        _pickImageFromGallery();
+                        _pickImageFromGallery(context);
                       },
                       child: SizedBox(
                           child: Ink(
@@ -168,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(20),
                       onTap: () {
-                        _pickImageFromCamera();
+                        _pickImageFromCamera(context);
                       },
                       child: SizedBox(
                           child: Ink(
@@ -189,8 +204,10 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
+// DB
+
 // Gallery
-  Future _pickImageFromGallery() async {
+  Future _pickImageFromGallery(BuildContext context) async {
     final returnImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
@@ -199,7 +216,10 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       selectedImage = File(returnImage.path);
       _image = File(returnImage.path).readAsBytesSync();
+      // inputImage = ml.InputImage.fromFile(File(returnImage.path));
+      imageToText(context, ml.InputImage.fromFile(File(returnImage.path)));
     });
+
     if (mounted) {
       Navigator.of(context).pop();
     } else {
@@ -208,7 +228,7 @@ class _HomePageState extends State<HomePage> {
   }
 
 // Camera
-  Future _pickImageFromCamera() async {
+  Future _pickImageFromCamera(BuildContext context) async {
     final returnImage =
         await ImagePicker().pickImage(source: ImageSource.camera);
 
@@ -217,11 +237,64 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       selectedImage = File(returnImage.path);
       _image = File(returnImage.path).readAsBytesSync();
+      // inputImage = ml.InputImage.fromFile(File(returnImage.path));
+      imageToText(context, ml.InputImage.fromFile(File(returnImage.path)));
     });
+
     if (mounted) {
       Navigator.of(context).pop();
     } else {
       return;
     }
+  }
+
+// OCR
+  Future imageToText(
+      BuildContext buildContext, ml.InputImage inputImage) async {
+    showDialog(
+      context: context,
+      barrierDismissible:
+          false, // prevent the user from dismissing the loading dialog
+      builder: (BuildContext context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    String temp_result = '';
+    final textDetector = ml.GoogleMlKit.vision.textRecognizer();
+    final ml.RecognizedText recognisedText =
+        await textDetector.processImage(inputImage);
+
+    setState(() {
+      String text = recognisedText.text;
+      for (ml.TextBlock block in recognisedText.blocks) {
+        //each block of text/section of text
+        final String text = block.text;
+        // print("block of text: ");
+        results.add(text);
+        // print(text);
+        for (ml.TextLine line in block.lines) {
+          //each line within a text block
+          for (ml.TextElement element in line.elements) {
+            //each word within a line
+            temp_result += element.text + " ";
+          }
+        }
+      }
+      // results.add(temp_result);
+    });
+    int x = 1;
+    results.map((textvalue) {
+      print("$x. $textvalue");
+      x++;
+    }).toList();
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return const dialog.NumplateDialog();
+        });
   }
 }
